@@ -18,7 +18,7 @@ public class EventFactory {
         eventHandlers = new HashMap<>();
     }
 
-    public void addListener(Object listener) {
+    public void addEvent(Object listener) {
         for (Method method : listener.getClass().getDeclaredMethods()) {
             if (method.isAnnotationPresent(ApareEventHandler.class)) {
                 Class<?>[] parameterTypes = method.getParameterTypes();
