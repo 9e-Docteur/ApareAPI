@@ -41,3 +41,8 @@ publishing {
         }
     }
 }
+
+wrapper {
+    gradleVersion = "8.0"
+    distributionType = Wrapper.DistributionType.ALL
+}
