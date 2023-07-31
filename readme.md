@@ -1,4 +1,4 @@
-# ApareAPI
+# ApareAPI [![Build](https://github.com/9e-Docteur/ApareAPI/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/9e-Docteur/ApareAPI/actions/workflows/gradle-publish.yml)
 ApareAPI is a API for multiple use in Java. Created the 1 Augustus 2023 by 9e_Docteur, this API is the result of [ApareProject](https://github.com/9e-Docteur/ApareProject). A project which constitute to create many things in Java.
 This API can be used for multiple things. With it, you can create very easily events, custom mod support, and more coming later !
 
