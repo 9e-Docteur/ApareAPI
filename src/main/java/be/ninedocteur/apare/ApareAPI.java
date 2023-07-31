@@ -17,7 +17,7 @@ public class ApareAPI {
         if(!isStarted){
             eventFactory = new EventFactory();
             ModLoader modLoader = new ModLoader();
-            logger.send("Starting ApareAPI", Logger.Type.WARN);
+            logger.send("Starting ApareAPI...", Logger.Type.WARN);
         }
     }
 
