@@ -23,4 +23,4 @@ dependencies {
 Replace ``<version>`` by the version of the api you wanna choose.
 
 ### Done !
-Now you can follow tutorials on the wiki
+Now you can follow tutorials on the [wiki](https://github.com/9e-Docteur/ApareAPI/wiki/).
