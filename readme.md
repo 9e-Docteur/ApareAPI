@@ -2,6 +2,8 @@
 ApareAPI is a API for multiple use in Java. Created the 1 Augustus 2023 by 9e_Docteur, this API is the result of [ApareProject](https://github.com/9e-Docteur/ApareProject). A project which constitute to create many things in Java.
 This API can be used for multiple things. With it, you can create very easily events, custom mod support, and more coming later !
 
+## Licence
+[© 2023 Loris P. (9e_Docteur). All rights reserved.](https://github.com/9e-Docteur/ApareAPI/blob/master/LICENCE.md)
 ### How to install ApareAPI on my project?
 1. Add the maven to the repository on gradle or maven.<br>
 Gradle:
