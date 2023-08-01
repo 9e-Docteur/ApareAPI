@@ -16,14 +16,14 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class ModLoader {
+    private static String fileDir;
     public ModLoader() {
         //ApareAPI.getLogger().send("Loading Apare Mods...", Logger.Type.NORMAL);
         loadMods();
     }
-    private static final String MODS_FOLDER = "C:\\ApareProject\\Mods";
 
     public static void loadMods() {
-        File folder = new File(MODS_FOLDER);
+        File folder = new File(fileDir);
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -79,6 +79,23 @@ public class ModLoader {
             imagesDir.mkdirs();
         }
         return imagesDir;
+    }
+
+    public static File getOrCreateModDir(String fileDir) {
+        File imagesDir = new File(fileDir);
+        setModFileDir(fileDir);
+        if (!imagesDir.exists()) {
+            imagesDir.mkdirs();
+        }
+        return imagesDir;
+    }
+
+    public static String getModFileDir() {
+        return fileDir;
+    }
+
+    public static void setModFileDir(String fileDir) {
+        ModLoader.fileDir = fileDir;
     }
 }
 

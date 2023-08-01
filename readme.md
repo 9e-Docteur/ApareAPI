@@ -15,8 +15,24 @@ maven {
     }
 }
 ```
-
+Maven:
+```maven
+<repository>
+     <id>github</id>
+    <url>https://maven.pkg.github.com/9e_Docteur/ApareAPI</url>
+    <snapshots>
+       <enabled>true</enabled> -> IF YOU WANT ALPHA/BETA/DEV OF THE API
+    </snapshots>
+</repository>
+```
 2. Add the dependency
+Gradle:
+```gradle
+dependencies {
+    implementation "be.ninedocteur:apareapi:<version>"
+}
+```
+Maven:
 ```gradle
 dependencies {
     implementation "be.ninedocteur:apareapi:<version>"
