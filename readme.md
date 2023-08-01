@@ -33,10 +33,8 @@ dependencies {
 }
 ```
 Maven:
-```gradle
-dependencies {
-    implementation "be.ninedocteur:apareapi:<version>"
-}
+```maven
+
 ```
 Replace ``<version>`` by the version of the api you wanna choose.
 
