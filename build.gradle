@@ -4,7 +4,10 @@ plugins {
 }
 
 group = "be.ninedocteur"
-version = "1.0-SNAPSHOT"
+version = "1.0-release"
+def jarName = "YourJarName"
+def modInstance = ""
+def modName = "YourModName"
 
 repositories {
     mavenCentral()
@@ -13,14 +16,50 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.17.0-rc1'
+
 }
+
+def userDir = System.getProperty("user.home")
+def jarFile
+if (!modInstance.isEmpty()) {
+    jarFile = file(userDir + '/ApareAPI/Mods/' + modInstance + '/' + modName + '.jar')
+} else {
+    jarFile = file(userDir + '/ApareAPI/Mods/common/' + modName + '.jar')
+}
+
+task apareCompile(type: Jar) {
+    def destDir = jarFile.parentFile
+    if (!destDir.exists()) {
+        destDir.mkdirs()
+    }
+    from sourceSets.main.output
+    archiveFileName = jarFile.name
+    destinationDirectory = jarFile.parentFile
+}
+
+task buildWithoutPacket(type: Jar) {
+    archiveFileName = 'ApareAPIWithoutPacket' + version + '.jar'
+    destinationDirectory = file('build/libs')
+
+    from sourceSets.main.output
+
+    exclude 'be/ninedocteur/apare/network/**'
+    exclude 'be/ninedocteur/apare/server/**'
+    exclude 'be/ninedocteur/apare/client/**'
+}
+
+tasks.build.dependsOn buildWithoutPacket
+
+
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId = 'be.ninedocteur'
             artifactId = 'apareapi'
-            version = "0.1-ALPHA"
+            version = "1.0"
             from components.java
         }
     }

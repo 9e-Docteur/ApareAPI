@@ -3,13 +3,19 @@ package be.ninedocteur.apare.api.mod;
 public abstract class ApareMod {
     private String modName;
     private String modVersion;
+    private String modAuthor;
+    private String modCredits;
+    private String modDescription;
 
-    public ApareMod(String modName, String modVersion){
+    public ApareMod(String modName, String modVersion, String modAuthor, String modCredits, String modDescription){
         this.modName = modName;
         this.modVersion = modVersion;
+        this.modAuthor = modAuthor;
+        this.modCredits = modCredits;
+        this.modDescription = modDescription;
     }
 
-    public abstract void loadMod();
+    public abstract void init();
 
     public String getModName() {
         return modName;

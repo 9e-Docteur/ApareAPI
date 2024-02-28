@@ -2,6 +2,8 @@ package be.ninedocteur.apare.api.mod;
 
 import be.ninedocteur.apare.utils.Logger;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -9,81 +11,158 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class ModLoader {
-    private static String fileDir;
-    public ModLoader() {
-        //ApareAPI.getLogger().send("Loading Apare Mods...", Logger.Type.NORMAL);
-        loadMods();
+    private static String userDir = System.getProperty("user.home");
+    private static String commonFolder = userDir + "/ApareAPI/Mods/common/";
+    private static boolean isLoaded;
+    private static List<String> REQUIRED_FIELD = new ArrayList<>();
+    public static HashMap<String, Boolean> MOD_LOADED = new HashMap<>();
+
+    public ModLoader(){
+        if(!isLoaded){
+            REQUIRED_FIELD.add("mod_name");
+            REQUIRED_FIELD.add("mod_version");
+            REQUIRED_FIELD.add("authors");
+            REQUIRED_FIELD.add("credits");
+            REQUIRED_FIELD.add("description");
+        }
     }
 
-    public static void loadMods() {
-        File folder = new File(fileDir);
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
+    public void loadMods() {
+        if(!isLoaded){
+            File folder = new File(commonFolder);
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
 
-        File[] files = folder.listFiles((dir, name) -> name.endsWith(".jar"));
+            File[] files = folder.listFiles((dir, name) -> name.endsWith(".jar"));
 
-        if (files == null) {
-            System.out.println("No mods found");
-            return;
-        }
+            if (files == null) {
+                System.out.println("No mods found");
+                return;
+            }
 
-        for (File file : files) {
-            try {
-                URL url = file.toURI().toURL();
-                URLClassLoader loader = new URLClassLoader(new URL[] { url });
+            for (File file : files) {
+                try {
+                    URL url = file.toURI().toURL();
+                    URLClassLoader loader = new URLClassLoader(new URL[] { url });
 
-                JarFile jarFile = new JarFile(file);
-                Enumeration<JarEntry> entries = jarFile.entries();
+                    ObjectMapper mapper = new ObjectMapper();
 
-                while (entries.hasMoreElements()) {
-                    JarEntry entry = entries.nextElement();
-                    if (entry.getName().endsWith(".class")) {
-                        String className = entry.getName().replace('/', '.').substring(0, entry.getName().length() - 6);
-                        try {
-                            Class<?> clazz = loader.loadClass(className);
-                            if (clazz.isAnnotationPresent(Mod.class)) {
-                                Object instance = clazz.getAnnotation(Mod.class).value().newInstance();
-                                if (instance instanceof ApareMod) {
-                                    ((ApareMod) instance).loadMod();
+                    JarFile jarFile = new JarFile(file);
+                    Enumeration<JarEntry> entries = jarFile.entries();
+
+                    while (entries.hasMoreElements()) {
+                        JarEntry entry = entries.nextElement();
+                        if (entry.getName().equals("mods.json")) {
+                            JsonNode modNode = mapper.readTree(jarFile.getInputStream(entry));
+                            validateModJson(file.getName() , modNode);
+                        }
+                        if (entry.getName().endsWith(".class")) {
+                            String className = entry.getName().replace('/', '.').substring(0, entry.getName().length() - 6);
+                            try {
+                                Class<?> clazz = loader.loadClass(className);
+                                if (clazz.isAnnotationPresent(Mod.class)) {
+                                    Object instance = clazz.getAnnotation(Mod.class).value().newInstance();
+                                    if (instance instanceof ApareMod) {
+                                        ((ApareMod) instance).init();
+                                    }
                                 }
+                            } catch (ClassNotFoundException e) {
+                                System.out.println("Failed to load class " + className + " from " + file.getName());
                             }
-                        } catch (ClassNotFoundException e) {
-                            System.out.println("Failed to load class " + className + " from " + file.getName());
                         }
                     }
+
+                    jarFile.close();
+                    loader.close();
+
+                } catch (IOException e) {
+                    System.out.println("Failed to load mod from " + file.getName() + ": " + e.getMessage());
+                } catch (InstantiationException | IllegalAccessException e) {
+                    System.out.println("Failed to load mod from " + file.getName() + ": " + e.getMessage());
                 }
-
-                jarFile.close();
-                loader.close();
-
-            } catch (IOException e) {
-                System.out.println("Failed to load mod from " + file.getName() + ": " + e.getMessage());
-            } catch (InstantiationException | IllegalAccessException e) {
-                System.out.println("Failed to load mod from " + file.getName() + ": " + e.getMessage());
             }
+            isLoaded = true;
+        }
+    }
+
+    public void loadModsForModInstance(String modInstance) {
+        String modInstanceFolder = userDir + "/ApareAPI/Mods/" + modInstance + "/";
+        if (!MOD_LOADED.get(modInstance)) {
+            File folder = new File(modInstanceFolder);
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+
+            File[] files = folder.listFiles((dir, name) -> name.endsWith(".jar"));
+
+            if (files == null) {
+                System.out.println("No mods found");
+                return;
+            }
+
+            for (File file : files) {
+                try {
+                    URL url = file.toURI().toURL();
+                    URLClassLoader loader = new URLClassLoader(new URL[]{url});
+
+                    ObjectMapper mapper = new ObjectMapper();
+
+                    JarFile jarFile = new JarFile(file);
+                    Enumeration<JarEntry> entries = jarFile.entries();
+
+                    while (entries.hasMoreElements()) {
+                        JarEntry entry = entries.nextElement();
+                        if (entry.getName().equals("mods.json")) {
+                            JsonNode modNode = mapper.readTree(jarFile.getInputStream(entry));
+                            validateModJson(file.getName(), modNode);
+                        }
+                        if (entry.getName().endsWith(".class")) {
+                            String className = entry.getName().replace('/', '.').substring(0, entry.getName().length() - 6);
+                            try {
+                                Class<?> clazz = loader.loadClass(className);
+                                if (clazz.isAnnotationPresent(Mod.class)) {
+                                    Object instance = clazz.getAnnotation(Mod.class).value().newInstance();
+                                    if (instance instanceof ApareMod) {
+                                        ((ApareMod) instance).init();
+                                    }
+                                }
+                            } catch (ClassNotFoundException e) {
+                                System.out.println("Failed to load class " + className + " from " + file.getName());
+                            }
+                        }
+                    }
+
+                    jarFile.close();
+                    loader.close();
+
+                } catch (IOException e) {
+                    System.out.println("Failed to load mod from " + file.getName() + ": " + e.getMessage());
+                } catch (InstantiationException | IllegalAccessException e) {
+                    System.out.println("Failed to load mod from " + file.getName() + ": " + e.getMessage());
+                }
+            }
+            isLoaded = true;
         }
     }
 
 
     public static File getOrCreateModDir() {
-        File imagesDir = new File("C:\\ApareProject\\Mods\\");
+        File imagesDir = new File(commonFolder);
         if (!imagesDir.exists()) {
             imagesDir.mkdirs();
         }
         return imagesDir;
     }
 
-    public static File getOrCreateModDir(String fileDir) {
-        File imagesDir = new File(fileDir);
-        setModFileDir(fileDir);
+    public static File getOrCreateModDir(String modInstance) {
+        String modInstanceFolder = userDir + "/ApareAPI/Mods/";
+        File imagesDir = new File(modInstanceFolder + modInstance + "/");
         if (!imagesDir.exists()) {
             imagesDir.mkdirs();
         }
@@ -91,11 +170,20 @@ public class ModLoader {
     }
 
     public static String getModFileDir() {
-        return fileDir;
+        return commonFolder;
     }
 
     public static void setModFileDir(String fileDir) {
-        ModLoader.fileDir = fileDir;
+        ModLoader.commonFolder = fileDir;
+    }
+
+    private static boolean validateModJson(String modName, JsonNode modNode) {
+        for(String requiredString : REQUIRED_FIELD){
+            if(modNode.findParent(requiredString) == null){
+                throw new RuntimeException("Missing a value: " + requiredString + " in mods.json from mod " + modName);
+            }
+        }
+        return true;
     }
 }
 
