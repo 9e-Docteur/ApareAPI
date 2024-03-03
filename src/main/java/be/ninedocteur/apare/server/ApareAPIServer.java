@@ -1,6 +1,7 @@
 package be.ninedocteur.apare.server;
 
 import be.ninedocteur.apare.api.mod.ModLoader;
+import be.ninedocteur.apare.api.mod.ModSide;
 import be.ninedocteur.apare.client.ClientConnection;
 import be.ninedocteur.apare.utils.ApareAPIJVMArgs;
 
@@ -25,7 +26,7 @@ public class ApareAPIServer implements Runnable{
         javaArgs = new ApareAPIJVMArgs(args);
         this.port = port;
         if(!javaArgs.containsArg("noMods")){
-            modLoader = new ModLoader();
+            modLoader = new ModLoader(ModSide.SERVER);
             modLoader.loadMods();
         }
         try{

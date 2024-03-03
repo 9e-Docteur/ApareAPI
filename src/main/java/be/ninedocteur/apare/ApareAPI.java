@@ -1,7 +1,9 @@
 package be.ninedocteur.apare;
 
+import be.ninedocteur.apare.api.ApareDriver;
 import be.ninedocteur.apare.api.event.EventFactory;
 import be.ninedocteur.apare.api.mod.ModLoader;
+import be.ninedocteur.apare.api.mod.ModSide;
 import be.ninedocteur.apare.events.APIStartingEvent;
 import be.ninedocteur.apare.network.PacketHandler;
 import be.ninedocteur.apare.utils.ApareAPIJVMArgs;
@@ -21,6 +23,7 @@ public class ApareAPI {
     private static ApareAPIJVMArgs javaArgs;
     public static List<ITicker> CLASSES_TO_TICK = new ArrayList<>();
     private static ModLoader modLoader;
+    private static ApareDriver apareDriver;
 
     public static void main(String[] args) {
         javaArgs = new ApareAPIJVMArgs(args);
@@ -44,8 +47,9 @@ public class ApareAPI {
             logger.send("Starting ApareAPI...", Logger.Type.WARN);
             eventFactory = new EventFactory();
             packetHandler = new PacketHandler();
+            apareDriver = new ApareDriver();
             if(!javaArgs.containsArg("noMods")){
-                modLoader = new ModLoader();
+                modLoader = new ModLoader(ModSide.CLIENT);
                 modLoader.loadMods();
             }
             TickerManager.start();
@@ -86,5 +90,9 @@ public class ApareAPI {
 
     public static ApareAPIJVMArgs getJavaArgs() {
         return javaArgs;
+    }
+
+    public static ApareDriver getDriver() {
+        return apareDriver;
     }
 }

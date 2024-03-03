@@ -22,10 +22,12 @@ public class ModLoader {
     private static boolean isLoaded;
     private static List<String> REQUIRED_FIELD = new ArrayList<>();
     public static HashMap<String, Boolean> MOD_LOADED = new HashMap<>();
+    private static ModSide modSide;
 
-    public ModLoader(){
+    public ModLoader(ModSide modSide){
         if(!isLoaded){
             ApareAPI.getLogger().send("Starting mod loader...", Logger.Type.WARN);
+            ModLoader.modSide = modSide;
             REQUIRED_FIELD.add("mod_name");
             REQUIRED_FIELD.add("mod_version");
             REQUIRED_FIELD.add("authors");
@@ -71,9 +73,14 @@ public class ModLoader {
                                 Class<?> clazz = loader.loadClass(className);
                                 if (clazz.isAnnotationPresent(Mod.class)) {
                                     Object instance = clazz.getAnnotation(Mod.class).value().newInstance();
+                                    Mod modAnnonation = clazz.getAnnotation(Mod.class);
                                     if (instance instanceof ApareMod) {
-                                        ((ApareMod) instance).init();
-                                        ApareAPI.getLogger().send("Finded mod: " + ((ApareMod) instance).getModName(), Logger.Type.WARN);
+                                        if(modAnnonation.modSide() == ModSide.BOTH || modAnnonation.modSide() == modSide){
+                                            ((ApareMod) instance).init();
+                                            ApareAPI.getLogger().send("Finded mod: " + ((ApareMod) instance).getModName(), Logger.Type.WARN);
+                                        } else {
+                                            ApareAPI.getLogger().send("Cannot load mod: " + ((ApareMod) instance).getModName() + "\n--> This mod is for " + modAnnonation.modSide().name() + " only!", Logger.Type.ERROR);
+                                        }
                                     }
                                 }
                             } catch (ClassNotFoundException e) {
@@ -133,9 +140,14 @@ public class ModLoader {
                                 Class<?> clazz = loader.loadClass(className);
                                 if (clazz.isAnnotationPresent(Mod.class)) {
                                     Object instance = clazz.getAnnotation(Mod.class).value().newInstance();
+                                    Mod modAnnonation = clazz.getAnnotation(Mod.class);
                                     if (instance instanceof ApareMod) {
-                                        ((ApareMod) instance).init();
-                                        ApareAPI.getLogger().send("Finded mod: " + ((ApareMod) instance).getModName() + " for modInstance:" + modInstance, Logger.Type.WARN);
+                                        if(modAnnonation.modSide() == ModSide.BOTH || modAnnonation.modSide() == modSide){
+                                            ((ApareMod) instance).init();
+                                            ApareAPI.getLogger().send("Finded mod: " + ((ApareMod) instance).getModName(), Logger.Type.WARN);
+                                        } else {
+                                            ApareAPI.getLogger().send("Cannot load mod: " + ((ApareMod) instance).getModName() + "\n--> This mod is for " + modAnnonation.modSide().name() + " only!", Logger.Type.ERROR);
+                                        }
                                     }
                                 }
                             } catch (ClassNotFoundException e) {
