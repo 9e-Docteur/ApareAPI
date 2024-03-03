@@ -3,6 +3,7 @@ package be.ninedocteur.apare.server;
 import be.ninedocteur.apare.api.mod.ModLoader;
 import be.ninedocteur.apare.api.mod.ModSide;
 import be.ninedocteur.apare.client.ClientConnection;
+import be.ninedocteur.apare.network.PacketContent;
 import be.ninedocteur.apare.utils.ApareAPIJVMArgs;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class ApareAPIServer implements Runnable{
     private boolean running = false;
     private int id = 0;
     public HashMap<Integer, ServerConnection> connections = new HashMap<Integer, ServerConnection>();
-    private List<ClientConnection> clients = new ArrayList<>();
+    public HashMap<Integer, PacketContent> informations_for_connection_id = new HashMap<Integer, PacketContent>();
     private ModLoader modLoader;
     private static ApareAPIJVMArgs javaArgs;
 
@@ -63,7 +64,7 @@ public class ApareAPIServer implements Runnable{
         id++;
     }
 
-    private void shutdown() {
+    public void shutdown() {
         running = false;
 
         try{
