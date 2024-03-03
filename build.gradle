@@ -40,7 +40,7 @@ task apareCompile(type: Jar) {
 }
 
 task buildWithoutPacket(type: Jar) {
-    archiveFileName = 'ApareAPIWithoutPacket' + version + '.jar'
+    archiveFileName = 'ApareAPIWithoutPacket-' + version + '.jar'
     destinationDirectory = file('build/libs')
 
     from sourceSets.main.output
