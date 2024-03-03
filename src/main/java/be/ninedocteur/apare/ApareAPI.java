@@ -39,25 +39,31 @@ public class ApareAPI {
 
     public static void start(){
         if(!isStarted){
+            logger.send("Starting ApareAPI...", Logger.Type.WARN);
             eventFactory = new EventFactory();
             packetHandler = new PacketHandler();
-            ModLoader modLoader = new ModLoader();
+            if(!javaArgs.containsArg("noMods")){
+                ModLoader modLoader = new ModLoader();
+            }
             TickerManager.start();
-            logger.send("Starting ApareAPI...", Logger.Type.WARN);
             APIStartingEvent apiStartingEvent = new APIStartingEvent();
             eventFactory.fireEvent(apiStartingEvent);
         }
     }
 
     public static void doAction(Runnable runnable){
-        //For now bc string is not needed so hashmap -> list
-        Random random = new Random();
-        byte[] by = "RandomString".getBytes();
-        random.nextBytes(by);
-        String name = new String(by);
-        Thread newThread = new Thread(runnable);
-        newThread.run();
-        RUNNING_THREAD.put(name, newThread);
+        if(javaArgs.containsArg("singleThread")){
+            runnable.run();
+        } else {
+            //For now bc string is not needed so hashmap -> list
+            Random random = new Random();
+            byte[] by = "RandomString".getBytes();
+            random.nextBytes(by);
+            String name = new String(by);
+            Thread newThread = new Thread(runnable);
+            newThread.run();
+            RUNNING_THREAD.put(name, newThread);
+        }
     }
 
     public static Logger getLogger() {

@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "be.ninedocteur"
-version = "1.0-release"
+version = "1.1-release"
 def jarName = "YourJarName"
 def modInstance = ""
 def modName = "YourModName"
@@ -59,7 +59,7 @@ publishing {
         mavenJava(MavenPublication) {
             groupId = 'be.ninedocteur'
             artifactId = 'apareapi'
-            version = "1.0"
+            version = version
             from components.java
         }
     }

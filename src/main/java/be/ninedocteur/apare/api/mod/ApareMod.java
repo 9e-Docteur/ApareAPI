@@ -1,5 +1,7 @@
 package be.ninedocteur.apare.api.mod;
 
+import be.ninedocteur.apare.ApareAPI;
+
 public abstract class ApareMod {
     private String modName;
     private String modVersion;

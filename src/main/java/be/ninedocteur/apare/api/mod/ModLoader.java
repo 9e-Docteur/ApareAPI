@@ -1,5 +1,6 @@
 package be.ninedocteur.apare.api.mod;
 
+import be.ninedocteur.apare.ApareAPI;
 import be.ninedocteur.apare.utils.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,6 +25,7 @@ public class ModLoader {
 
     public ModLoader(){
         if(!isLoaded){
+            ApareAPI.getLogger().send("Starting mod loader...", Logger.Type.WARN);
             REQUIRED_FIELD.add("mod_name");
             REQUIRED_FIELD.add("mod_version");
             REQUIRED_FIELD.add("authors");
@@ -34,6 +36,7 @@ public class ModLoader {
 
     public void loadMods() {
         if(!isLoaded){
+            ApareAPI.getLogger().send("Looking for mods...", Logger.Type.WARN);
             File folder = new File(commonFolder);
             if (!folder.exists()) {
                 folder.mkdirs();
@@ -70,6 +73,7 @@ public class ModLoader {
                                     Object instance = clazz.getAnnotation(Mod.class).value().newInstance();
                                     if (instance instanceof ApareMod) {
                                         ((ApareMod) instance).init();
+                                        ApareAPI.getLogger().send("Finded mod: " + ((ApareMod) instance).getModName(), Logger.Type.WARN);
                                     }
                                 }
                             } catch (ClassNotFoundException e) {
@@ -92,6 +96,7 @@ public class ModLoader {
     }
 
     public void loadModsForModInstance(String modInstance) {
+        ApareAPI.getLogger().send("Looking for mod for modInstance: " + modInstance, Logger.Type.WARN);
         String modInstanceFolder = userDir + "/ApareAPI/Mods/" + modInstance + "/";
         if (!MOD_LOADED.get(modInstance)) {
             File folder = new File(modInstanceFolder);
@@ -130,6 +135,7 @@ public class ModLoader {
                                     Object instance = clazz.getAnnotation(Mod.class).value().newInstance();
                                     if (instance instanceof ApareMod) {
                                         ((ApareMod) instance).init();
+                                        ApareAPI.getLogger().send("Finded mod: " + ((ApareMod) instance).getModName() + " for modInstance:" + modInstance, Logger.Type.WARN);
                                     }
                                 }
                             } catch (ClassNotFoundException e) {

@@ -1,7 +1,9 @@
 package be.ninedocteur.apare.network;
 
 
+import be.ninedocteur.apare.ApareAPI;
 import be.ninedocteur.apare.server.ServerConnection;
+import be.ninedocteur.apare.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,14 +21,18 @@ public class PacketHandler {
 
     public void onReceived(Object p, ServerConnection connection) {
         //TO PROTECT UNKNOWN PACKETS
-        if (p instanceof Packet) {
-            Packet packet = (Packet) p;
-            if (packets.contains(p.getClass())) {
-                packet.loadContent(packet.getPacketContent());
-                packet.execute(connection);
-            } else {
-                System.out.println("Received unknown packet");
+        if(!ApareAPI.getJavaArgs().containsArg("noPackets")){
+            if (p instanceof Packet) {
+                Packet packet = (Packet) p;
+                if (packets.contains(p.getClass())) {
+                    packet.loadContent(packet.getPacketContent());
+                    packet.execute(connection);
+                } else {
+                    System.out.println("Received unknown packet");
+                }
             }
+        } else {
+            ApareAPI.getLogger().send("Received a packet, but ignored because --noPackets is in the program arguments", Logger.Type.ERROR);
         }
 
     }
