@@ -1,6 +1,8 @@
 package be.ninedocteur.apare.server;
 
+import be.ninedocteur.apare.api.mod.ModLoader;
 import be.ninedocteur.apare.client.ClientConnection;
+import be.ninedocteur.apare.utils.ApareAPIJVMArgs;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -16,10 +18,16 @@ public class ApareAPIServer implements Runnable{
     private int id = 0;
     public HashMap<Integer, ServerConnection> connections = new HashMap<Integer, ServerConnection>();
     private List<ClientConnection> clients = new ArrayList<>();
+    private ModLoader modLoader;
+    private static ApareAPIJVMArgs javaArgs;
 
-    public ApareAPIServer(int port){
+    public ApareAPIServer(String[] args, int port){
+        javaArgs = new ApareAPIJVMArgs(args);
         this.port = port;
-
+        if(!javaArgs.containsArg("noMods")){
+            modLoader = new ModLoader();
+            modLoader.loadMods();
+        }
         try{
             serverSocket = new ServerSocket(port);
         } catch(IOException e){

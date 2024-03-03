@@ -9,5 +9,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Mod {
     Class<? extends ApareMod> value();
+    ModSide modSide() default ModSide.BOTH;
 }
 

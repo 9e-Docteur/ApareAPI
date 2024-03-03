@@ -5,6 +5,7 @@ import be.ninedocteur.apare.api.mod.ModLoader;
 import be.ninedocteur.apare.events.APIStartingEvent;
 import be.ninedocteur.apare.network.PacketHandler;
 import be.ninedocteur.apare.utils.ApareAPIJVMArgs;
+import be.ninedocteur.apare.utils.DevicesInfos;
 import be.ninedocteur.apare.utils.Logger;
 import be.ninedocteur.apare.utils.tick.ITicker;
 import be.ninedocteur.apare.utils.tick.TickerManager;
@@ -19,6 +20,7 @@ public class ApareAPI {
     private static PacketHandler packetHandler;
     private static ApareAPIJVMArgs javaArgs;
     public static List<ITicker> CLASSES_TO_TICK = new ArrayList<>();
+    private static ModLoader modLoader;
 
     public static void main(String[] args) {
         javaArgs = new ApareAPIJVMArgs(args);
@@ -43,11 +45,15 @@ public class ApareAPI {
             eventFactory = new EventFactory();
             packetHandler = new PacketHandler();
             if(!javaArgs.containsArg("noMods")){
-                ModLoader modLoader = new ModLoader();
+                modLoader = new ModLoader();
+                modLoader.loadMods();
             }
             TickerManager.start();
             APIStartingEvent apiStartingEvent = new APIStartingEvent();
             eventFactory.fireEvent(apiStartingEvent);
+            logger.send("Running on: " + DevicesInfos.getOSName() + " --> " + DevicesInfos.getProcessorArch(), Logger.Type.NORMAL);
+            logger.send("Memory usage: " + DevicesInfos.getOccupiedMemory() + "MB/" + DevicesInfos.getFreeMemory() + "MB", Logger.Type.NORMAL);
+            logger.send("Started ApareAPI !", Logger.Type.SUCCESS);
         }
     }
 

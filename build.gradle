@@ -4,10 +4,7 @@ plugins {
 }
 
 group = "be.ninedocteur"
-version = "1.1-release"
-def jarName = "YourJarName"
-def modInstance = ""
-def modName = "YourModName"
+version = "1.2-release"
 
 repositories {
     mavenCentral()
@@ -22,23 +19,6 @@ dependencies {
 }
 
 def userDir = System.getProperty("user.home")
-def jarFile
-if (!modInstance.isEmpty()) {
-    jarFile = file(userDir + '/ApareAPI/Mods/' + modInstance + '/' + modName + '.jar')
-} else {
-    jarFile = file(userDir + '/ApareAPI/Mods/common/' + modName + '.jar')
-}
-
-task apareCompile(type: Jar) {
-    def destDir = jarFile.parentFile
-    if (!destDir.exists()) {
-        destDir.mkdirs()
-    }
-    from sourceSets.main.output
-    archiveFileName = jarFile.name
-    destinationDirectory = jarFile.parentFile
-}
-
 task buildWithoutPacket(type: Jar) {
     archiveFileName = 'ApareAPIWithoutPacket-' + version + '.jar'
     destinationDirectory = file('build/libs')
@@ -51,8 +31,6 @@ task buildWithoutPacket(type: Jar) {
 }
 
 tasks.build.dependsOn buildWithoutPacket
-
-
 
 publishing {
     publications {
