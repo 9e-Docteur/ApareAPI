@@ -1,17 +1,16 @@
 package be.ninedocteur.apare.server;
 
+import be.ninedocteur.apare.ApareAPI;
 import be.ninedocteur.apare.api.mod.ModLoader;
 import be.ninedocteur.apare.api.mod.ModSide;
-import be.ninedocteur.apare.client.ClientConnection;
 import be.ninedocteur.apare.network.PacketContent;
+import be.ninedocteur.apare.network.events.ClientJoiningServerEvent;
 import be.ninedocteur.apare.utils.ApareAPIJVMArgs;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class ApareAPIServer implements Runnable{
     private int port;
@@ -60,6 +59,8 @@ public class ApareAPIServer implements Runnable{
     private void initSocket(Socket socket) {
         ServerConnection connection = new ServerConnection(socket, id);
         connections.put(id, connection);
+        ClientJoiningServerEvent clientJoiningServerEvent = new ClientJoiningServerEvent(id, connection);
+        ApareAPI.getEventFactory().fireEvent(clientJoiningServerEvent);
         new Thread(connection).start();
         id++;
     }

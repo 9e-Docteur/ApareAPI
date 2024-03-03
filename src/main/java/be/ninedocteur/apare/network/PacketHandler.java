@@ -2,6 +2,7 @@ package be.ninedocteur.apare.network;
 
 
 import be.ninedocteur.apare.ApareAPI;
+import be.ninedocteur.apare.network.events.OnPacketReceivedEvent;
 import be.ninedocteur.apare.server.ServerConnection;
 import be.ninedocteur.apare.utils.Logger;
 
@@ -24,6 +25,8 @@ public class PacketHandler {
         if(!ApareAPI.getJavaArgs().containsArg("noPackets")){
             if (p instanceof Packet) {
                 Packet packet = (Packet) p;
+                OnPacketReceivedEvent onPacketReceivedEvent = new OnPacketReceivedEvent(packet);
+                ApareAPI.getEventFactory().fireEvent(onPacketReceivedEvent);
                 if (packets.contains(p.getClass())) {
                     packet.loadContent(packet.getPacketContent());
                     packet.execute(connection);

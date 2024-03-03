@@ -1,6 +1,7 @@
 package be.ninedocteur.apare.api.mod;
 
 import be.ninedocteur.apare.ApareAPI;
+import be.ninedocteur.apare.events.ModLoadedEvent;
 import be.ninedocteur.apare.utils.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -76,8 +77,10 @@ public class ModLoader {
                                     Mod modAnnonation = clazz.getAnnotation(Mod.class);
                                     if (instance instanceof ApareMod) {
                                         if(modAnnonation.modSide() == ModSide.BOTH || modAnnonation.modSide() == modSide){
-                                            ((ApareMod) instance).init();
                                             ApareAPI.getLogger().send("Finded mod: " + ((ApareMod) instance).getModName(), Logger.Type.WARN);
+                                            ((ApareMod) instance).init();
+                                            ModLoadedEvent modLoadedEvent = new ModLoadedEvent((ApareMod) instance);
+                                            ApareAPI.getEventFactory().fireEvent(modLoadedEvent);
                                         } else {
                                             ApareAPI.getLogger().send("Cannot load mod: " + ((ApareMod) instance).getModName() + "\n--> This mod is for " + modAnnonation.modSide().name() + " only!", Logger.Type.ERROR);
                                         }
