@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import static be.ninedocteur.apare.ApareAPI.CLASSES_TO_TICK;
-
 public class TickerManager {
     private static boolean isStarted;
-    public static void start() {
+    public static void start(List<ITicker> ctt) {
             List<String> packages = getPackages();
 
 
@@ -23,7 +21,7 @@ public class TickerManager {
                     if (clazz.isAnnotationPresent(Ticker.class) && ITicker.class.isAssignableFrom(clazz)) {
                         try {
                             ITicker ticker = (ITicker) clazz.getDeclaredConstructor().newInstance();
-                            CLASSES_TO_TICK.add(ticker);
+                            ctt.add(ticker);
                         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
                                  InvocationTargetException e) {
                             e.printStackTrace();

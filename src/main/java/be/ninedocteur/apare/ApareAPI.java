@@ -17,47 +17,23 @@ import java.util.*;
 public class ApareAPI {
     public static boolean isStarted;
     private static Logger logger = new Logger();
-    private static HashMap<String, Thread> RUNNING_THREAD = new HashMap<>();
-    private static EventFactory eventFactory;
-    private static PacketHandler packetHandler;
-    private static ApareAPIJVMArgs javaArgs;
-    public static List<ITicker> CLASSES_TO_TICK = new ArrayList<>();
     private static ModLoader modLoader;
-    private static ApareDriver apareDriver;
+    private static ApareAPIJVMArgs javaArgs = AIN.getJavaArgs();
+    private static EventFactory eventFactory = AIN.getEventFactory();
+
 
     public static void main(String[] args) {
-        javaArgs = new ApareAPIJVMArgs(args);
+        AIN.init(args);
         start();
-        while(true){
-            for(Map.Entry<String, Thread> entry : RUNNING_THREAD.entrySet()){
-                if(!entry.getValue().isAlive()){
-                    entry.getValue().run();
-                    entry.getValue().stop();
-                    RUNNING_THREAD.remove(entry.getKey());
-                }
-            }
-            for(ITicker ticker : CLASSES_TO_TICK){
-                ticker.tick();
-            }
-        }
     }
 
     public static void start(){
         if(!isStarted){
             logger.send("Starting ApareAPI...", Logger.Type.WARN);
-            eventFactory = new EventFactory();
-            packetHandler = new PacketHandler();
-            apareDriver = new ApareDriver();
             if(!javaArgs.containsArg("noMods")){
                 modLoader = new ModLoader(ModSide.CLIENT);
                 modLoader.loadMods();
             }
-            TickerManager.start();
-            APIStartingEvent apiStartingEvent = new APIStartingEvent();
-            eventFactory.fireEvent(apiStartingEvent);
-            logger.send("Running on: " + DevicesInfos.getOSName() + " --> " + DevicesInfos.getProcessorArch(), Logger.Type.NORMAL);
-            logger.send("Memory usage: " + DevicesInfos.getOccupiedMemory() + "MB/" + DevicesInfos.getFreeMemory() + "MB", Logger.Type.NORMAL);
-            logger.send("Started ApareAPI !", Logger.Type.SUCCESS);
         }
     }
 
@@ -72,7 +48,7 @@ public class ApareAPI {
             String name = new String(by);
             Thread newThread = new Thread(runnable);
             newThread.run();
-            RUNNING_THREAD.put(name, newThread);
+            AIN.getRunningThread().put(name, newThread);
         }
     }
 
@@ -84,15 +60,11 @@ public class ApareAPI {
         return eventFactory;
     }
 
-    public static PacketHandler getPacketHandler() {
-        return packetHandler;
-    }
-
     public static ApareAPIJVMArgs getJavaArgs() {
         return javaArgs;
     }
 
-    public static ApareDriver getDriver() {
-        return apareDriver;
+    public static PacketHandler getPacketHandler() {
+        return AIN.getPacketHandler();
     }
 }
