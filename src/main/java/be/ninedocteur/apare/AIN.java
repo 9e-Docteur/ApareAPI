@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//STANDS FOR ApareAPI Ingnition system
 public class AIN {
     private static List<ITicker> CLASSES_TO_TICK = new ArrayList<>();
     private static HashMap<String, Thread> RUNNING_THREAD = new HashMap<>();
