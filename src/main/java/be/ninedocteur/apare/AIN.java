@@ -2,12 +2,11 @@ package be.ninedocteur.apare;
 
 import be.ninedocteur.apare.api.ApareDriver;
 import be.ninedocteur.apare.api.event.EventFactory;
-import be.ninedocteur.apare.api.mod.ModLoader;
 import be.ninedocteur.apare.events.APIStartingEvent;
 import be.ninedocteur.apare.network.PacketHandler;
 import be.ninedocteur.apare.utils.ApareAPIJVMArgs;
 import be.ninedocteur.apare.utils.DevicesInfos;
-import be.ninedocteur.apare.utils.Logger;
+import be.ninedocteur.apare.utils.logger.Logger;
 import be.ninedocteur.apare.utils.tick.ITicker;
 import be.ninedocteur.apare.utils.tick.TickerManager;
 

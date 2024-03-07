@@ -4,7 +4,7 @@ package be.ninedocteur.apare.network;
 import be.ninedocteur.apare.ApareAPI;
 import be.ninedocteur.apare.network.events.OnPacketReceivedEvent;
 import be.ninedocteur.apare.server.ServerConnection;
-import be.ninedocteur.apare.utils.Logger;
+import be.ninedocteur.apare.utils.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;

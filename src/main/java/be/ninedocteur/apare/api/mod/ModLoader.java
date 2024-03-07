@@ -2,17 +2,14 @@ package be.ninedocteur.apare.api.mod;
 
 import be.ninedocteur.apare.ApareAPI;
 import be.ninedocteur.apare.events.ModLoadedEvent;
-import be.ninedocteur.apare.utils.Logger;
+import be.ninedocteur.apare.utils.logger.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;

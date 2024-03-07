@@ -1,6 +1,7 @@
-package be.ninedocteur.apare.utils;
+package be.ninedocteur.apare.utils.logger;
 
 import be.ninedocteur.apare.ApareAPI;
+import be.ninedocteur.apare.utils.MessageUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,9 +14,16 @@ import java.util.Locale;
 public class Logger {
     private static String tempString;
     private static String message;
+    private String name;
     static Date date = new Date();
     static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE_d_MMMM_yyyy___HH-mm-ss ", Locale.getDefault());
     private static String logFile = simpleDateFormat.format(date);
+    private MessageUtils msg;
+
+    public Logger(String name){
+        this.name = name;
+        msg = new MessageUtils(name);
+    }
 
     public void send(String message, Type type) {
         Date date = new Date();
@@ -37,22 +45,22 @@ public class Logger {
          */
 
         if (type == Type.NORMAL && message != tempString) {
-            MessageUtils.send(dateFormatted + message);
+            msg.send(dateFormatted + message);
             tempString = dateFormatted + message;
             Logger.message = tempString;
             addLineToLog(tempString);
         } else if (type == Type.WARN && message != tempString) {
-            MessageUtils.sendWarn(dateFormatted + message);
+            msg.sendWarn(dateFormatted + message);
             tempString = dateFormatted + message;
             Logger.message = tempString;
             addLineToLog(tempString);
         } else if (type == Type.ERROR && message != tempString) {
-            MessageUtils.sendError(dateFormatted + message);
+            msg.sendError(dateFormatted + message);
             tempString = dateFormatted + message;
             Logger.message = tempString;
             addLineToLog(tempString);
         } else {
-            MessageUtils.sendSuccess(dateFormatted + message);
+            msg.sendSuccess(dateFormatted + message);
             tempString = dateFormatted + message;
             Logger.message = tempString;
             addLineToLog(tempString);
