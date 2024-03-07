@@ -62,7 +62,7 @@ public class AIN {
     }
 
     public static EventFactory getEventFactory() {
-        return AIN.getEventFactory();
+        return eventFactory;
     }
 
     public static PacketHandler getPacketHandler() {
