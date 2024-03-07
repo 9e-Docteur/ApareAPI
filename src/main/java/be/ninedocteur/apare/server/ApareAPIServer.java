@@ -46,6 +46,7 @@ public class ApareAPIServer implements Runnable{
         System.out.println("Server started on port: " + port);
 
         while(running){
+            AIN.tick();
             try{
                 Socket socket = serverSocket.accept();
                 initSocket(socket);

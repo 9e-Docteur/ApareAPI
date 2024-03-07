@@ -29,6 +29,7 @@ public class ApareAPI {
 
     public static void start(){
         if(!isStarted){
+            AIN.tick();
             logger.send("Starting ApareAPI...", Logger.Type.WARN);
             if(!javaArgs.containsArg("noMods")){
                 modLoader = new ModLoader(ModSide.CLIENT);
