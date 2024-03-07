@@ -18,28 +18,32 @@ public class ApareAPI {
     public static boolean isStarted;
     private static Logger logger = new Logger();
     private static ModLoader modLoader;
-    private static ApareAPIJVMArgs javaArgs = AIN.getJavaArgs();
-    private static EventFactory eventFactory = AIN.getEventFactory();
-
+    private static boolean modIgnited;
 
     public static void main(String[] args) {
         AIN.init(args);
         start();
+        while (true){
+            if(!modIgnited){
+                if(AIN.ignited){
+                    if(!getJavaArgs().containsArg("noMods")){
+                        modLoader = new ModLoader(ModSide.CLIENT);
+                        modLoader.loadMods();
+                    }
+                }
+            }
+        }
     }
 
     public static void start(){
         if(!isStarted){
             AIN.tick();
             logger.send("Starting ApareAPI...", Logger.Type.WARN);
-            if(!javaArgs.containsArg("noMods")){
-                modLoader = new ModLoader(ModSide.CLIENT);
-                modLoader.loadMods();
-            }
         }
     }
 
     public static void doAction(Runnable runnable){
-        if(javaArgs.containsArg("singleThread")){
+        if(getJavaArgs().containsArg("singleThread")){
             runnable.run();
         } else {
             //For now bc string is not needed so hashmap -> list
@@ -58,11 +62,11 @@ public class ApareAPI {
     }
 
     public static EventFactory getEventFactory() {
-        return eventFactory;
+        return AIN.getEventFactory();
     }
 
     public static ApareAPIJVMArgs getJavaArgs() {
-        return javaArgs;
+        return AIN.getJavaArgs();
     }
 
     public static PacketHandler getPacketHandler() {

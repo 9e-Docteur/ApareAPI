@@ -25,7 +25,7 @@ public class AIN {
     private static ApareAPIJVMArgs javaArgs;
 
     private static ApareDriver apareDriver;
-    private static boolean ignited;
+    static boolean ignited;
     private static boolean ticking;
     
     public static void init(String[] args){
@@ -33,10 +33,10 @@ public class AIN {
             eventFactory = new EventFactory();
             packetHandler = new PacketHandler();
             apareDriver = new ApareDriver();
+            javaArgs = new ApareAPIJVMArgs(args);
             APIStartingEvent apiStartingEvent = new APIStartingEvent();
             eventFactory.fireEvent(apiStartingEvent);
             TickerManager.start(CLASSES_TO_TICK);
-            javaArgs = new ApareAPIJVMArgs(args);
             ApareAPI.getLogger().send("Running on: " + DevicesInfos.getOSName() + " --> " + DevicesInfos.getProcessorArch(), Logger.Type.NORMAL);
             ApareAPI.getLogger().send("Memory usage: " + DevicesInfos.getOccupiedMemory() + "MB/" + DevicesInfos.getFreeMemory() + "MB", Logger.Type.NORMAL);
             ApareAPI.getLogger().send("Started ApareAPI !", Logger.Type.SUCCESS);
@@ -62,7 +62,7 @@ public class AIN {
     }
 
     public static EventFactory getEventFactory() {
-        return eventFactory;
+        return AIN.getEventFactory();
     }
 
     public static PacketHandler getPacketHandler() {
