@@ -11,24 +11,28 @@ import java.util.List;
 public class TickerManager {
     private static boolean isStarted;
     public static void start(List<ITicker> ctt) {
-            List<String> packages = getPackages();
+            new Thread(new Runnable() {
+                public void run() {
+                    List<String> packages = getPackages();
 
 
-            for (String packageName : packages) {
-                List<Class<?>> classes = getClasses(packageName);
+                    for (String packageName : packages) {
+                        List<Class<?>> classes = getClasses(packageName);
 
-                for (Class<?> clazz : classes) {
-                    if (clazz.isAnnotationPresent(Ticker.class) && ITicker.class.isAssignableFrom(clazz)) {
-                        try {
-                            ITicker ticker = (ITicker) clazz.getDeclaredConstructor().newInstance();
-                            ctt.add(ticker);
-                        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                                 InvocationTargetException e) {
-                            e.printStackTrace();
+                        for (Class<?> clazz : classes) {
+                            if (clazz.isAnnotationPresent(Ticker.class) && ITicker.class.isAssignableFrom(clazz)) {
+                                try {
+                                    ITicker ticker = (ITicker) clazz.getDeclaredConstructor().newInstance();
+                                    ctt.add(ticker);
+                                } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                                         InvocationTargetException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         }
                     }
                 }
-            }
+            }).start();
     }
 
     private static List<String> getPackages() {

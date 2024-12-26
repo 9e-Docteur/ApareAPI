@@ -20,7 +20,7 @@ dependencies {
 
 def userDir = System.getProperty("user.home")
 task buildWithoutPacket(type: Jar) {
-    archiveFileName = 'ApareAPIWithoutPacket-' + version + '.jar'
+    archiveFileName = 'ApareAPI-WithoutPacket-' + version + '.jar'
     destinationDirectory = file('build/libs')
 
     from sourceSets.main.output
@@ -44,6 +44,10 @@ publishing {
     repositories {
         mavenLocal()
     }
+}
+
+jar{
+    buildWithoutPacket
 }
 
 publishing {

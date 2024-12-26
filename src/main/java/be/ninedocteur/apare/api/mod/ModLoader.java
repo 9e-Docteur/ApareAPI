@@ -76,7 +76,7 @@ public class ModLoader {
                                         if(modAnnonation.modSide() == ModSide.BOTH || modAnnonation.modSide() == modSide){
                                             ApareAPI.getLogger().send("Finded mod: " + ((ApareMod) instance).getModName(), Logger.Type.WARN);
                                             ((ApareMod) instance).init();
-                                            ModLoadedEvent modLoadedEvent = new ModLoadedEvent((ApareMod) instance);
+                                            ModLoadedEvent modLoadedEvent = new ModLoadedEvent(this, (ApareMod) instance);
                                             ApareAPI.getEventFactory().fireEvent(modLoadedEvent);
                                         } else {
                                             ApareAPI.getLogger().send("Cannot load mod: " + ((ApareMod) instance).getModName() + "\n--> This mod is for " + modAnnonation.modSide().name() + " only!", Logger.Type.ERROR);

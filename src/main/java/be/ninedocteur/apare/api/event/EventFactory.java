@@ -27,7 +27,9 @@ public class EventFactory {
 
     public void fireEvent(Event event) {
         List<Consumer<Event>> eventListeners = getListeners(event.getClass());
-        eventListeners.forEach(listener -> listener.accept(event));
+        eventListeners.forEach(listener -> {
+            listener.accept(event);
+        });
     }
 
     private List<Consumer<Event>> getListeners(Class<? extends Event> eventClass) {

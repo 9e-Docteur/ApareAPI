@@ -1,6 +1,7 @@
 package be.ninedocteur.apare;
 
 import be.ninedocteur.apare.api.ApareDriver;
+import be.ninedocteur.apare.api.event.ApareEventHandler;
 import be.ninedocteur.apare.api.event.EventFactory;
 import be.ninedocteur.apare.events.APIStartingEvent;
 import be.ninedocteur.apare.network.PacketHandler;
@@ -33,6 +34,7 @@ public class AIN {
             packetHandler = new PacketHandler();
             apareDriver = new ApareDriver();
             javaArgs = new ApareAPIJVMArgs(args);
+            eventFactory.addListener(AIN::testEvent);
             APIStartingEvent apiStartingEvent = new APIStartingEvent();
             eventFactory.fireEvent(apiStartingEvent);
             TickerManager.start(CLASSES_TO_TICK);
@@ -41,6 +43,11 @@ public class AIN {
             ApareAPI.getLogger().send("Started ApareAPI !", Logger.Type.SUCCESS);
             ignited = true;
         }
+    }
+
+    @ApareEventHandler
+    public static void testEvent(APIStartingEvent event){
+        ApareAPI.getLogger().send("Started!", Logger.Type.SUCCESS);
     }
     
     public static void tick(){
