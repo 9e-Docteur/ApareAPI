@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "be.ninedocteur"
-version = "1.4.2-release"
+version = "1.4.8-alpha"
 
 repositories {
     mavenCentral()
